@@ -2,85 +2,52 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Wiki風ポータルサイト</title>
+    <title>DISCO掲示板</title>
     <style>
-        :root {
-            --discord-color: #5865F2;
-            --bg-color: #f9f9f9;
-            --card-bg: #ffffff;
-        }
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: var(--bg-color); margin: 0; padding-top: 60px; }
-        
-        /* ナビゲーション */
-        nav { background: #fff; border-bottom: 1px solid #ddd; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: fixed; top: 0; width: 100%; box-sizing: border-box; z-index: 1000; }
-        .logo { font-weight: bold; font-size: 1.2rem; color: var(--discord-color); }
-        .login-btn { background: var(--discord-color); color: white; padding: 8px 16px; border-radius: 5px; text-decoration: none; font-size: 0.9rem; }
-
-        /* メインコンテンツ */
-        .container { max-width: 1000px; margin: 20px auto; padding: 0 20px; }
-        .hero { background: var(--discord-color); color: white; padding: 40px; border-radius: 10px; margin-bottom: 30px; text-align: center; }
-        
-        /* ニュースカード */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .card { background: var(--card-bg); border: 1px solid #eee; border-radius: 8px; overflow: hidden; transition: 0.3s; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .card-img { width: 100%; height: 150px; background: #ddd; }
-        .card-body { padding: 15px; }
-        .card-tag { font-size: 0.7rem; color: var(--discord-color); font-weight: bold; text-transform: uppercase; }
-        .card-title { margin: 10px 0; font-size: 1.1rem; }
-        .card-text { font-size: 0.9rem; color: #666; line-height: 1.5; }
+        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; }
+        .header { background: #5865F2; color: white; padding: 10px; border-radius: 8px; display: flex; justify-content: space-between; }
+        .admin-panel { background: #fff3cd; padding: 15px; margin-top: 20px; display: none; }
+        .post-box, .post { background: white; padding: 15px; margin-top: 20px; border-radius: 8px; }
+        button { background: #5865F2; color: white; border: none; padding: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
-
-    <nav>
-        <div class="logo">DISCO WIKI風</div>
-        <a id="login" class="login-btn" href="#">Discordでログイン</a>
-    </nav>
-
-    <div class="container">
-        <div class="hero">
-            <h1>Discordの最新情報をチェック</h1>
-            <p>BOT、サーバー、アップデートに関する情報を集約しています。</p>
-        </div>
-
-        <div class="grid">
-            <!-- 記事1 -->
-            <div class="card">
-                <div class="card-img" style="background: url('https://placeholder.com') center/cover;"></div>
-                <div class="card-body">
-                    <span class="card-tag">アップデート</span>
-                    <h3 class="card-title">最新アップデート情報 2024</h3>
-                    <p class="card-text">新機能やUIの変更点について詳しく解説します。</p>
-                </div>
-            </div>
-            <!-- 記事2 -->
-            <div class="card">
-                <div class="card-img" style="background: url('https://placeholder.com') center/cover;"></div>
-                <div class="card-body">
-                    <span class="card-tag">BOT情報</span>
-                    <h3 class="card-title">おすすめ管理BOT 5選</h3>
-                    <p class="card-text">サーバー運営を自動化するための必須BOTを紹介。</p>
-                </div>
-            </div>
-            <!-- 記事3 -->
-            <div class="card">
-                <div class="card-img" style="background: url('https://placeholder.com') center/cover;"></div>
-                <div class="card-body">
-                    <span class="card-tag">サーバー</span>
-                    <h3 class="card-title">コミュニティの作り方</h3>
-                    <p class="card-text">人が集まるサーバーにするための初期設定のコツ。</p>
-                </div>
-            </div>
-        </div>
+    <div class="header"><h1>DISCO掲示板</h1><button id="loginBtn">Discordでログイン</button></div>
+    
+    <!-- 管理者専用パネル -->
+    <div id="adminPanel" class="admin-panel">
+        <h3>管理者パネル</h3>
+        <p>管理者ID: 1434872648101396511</p>
+        <button onclick="alert('権限付与(デモ)')">権限を付与</button>
     </div>
 
+    <div class="post-box">
+        <textarea id="postInput"></textarea>
+        <button onclick="addPost()">投稿</button>
+    </div>
+    <div id="posts"></div>
+
     <script>
-        // CLIENT_IDを入れてください
-        const CLIENT_ID = 'あなたのCLIENT_ID'; 
-        const REDIRECT_URI = encodeURIComponent(window.location.origin + '/api/auth');
-        document.getElementById('login').href = `https://discord.com{CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=identify`;
+        const ADMIN_ID = "1434872648101396511";
+        const params = new URLSearchParams(window.location.search);
+        const userData = JSON.parse(params.get('user') || '{}');
+
+        // ログイン状態と管理者の表示処理
+        if (userData.id) {
+            document.getElementById('loginBtn').innerText = `${userData.username}でログイン中`;
+            if (userData.id === ADMIN_ID) document.getElementById('adminPanel').style.display = 'block';
+        }
+        
+        function addPost() {
+            const text = document.getElementById('postInput').value;
+            if (text) {
+                const p = document.createElement('div');
+                p.className = 'post';
+                p.innerHTML = `<strong>${userData.username || 'ゲスト'}:</strong> ${text}`;
+                document.getElementById('posts').prepend(p);
+                document.getElementById('postInput').value = '';
+            }
+        }
     </script>
 </body>
 </html>

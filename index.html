@@ -2,16 +2,83 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>Discord連携サイト</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Wiki風ポータルサイト</title>
+    <style>
+        :root {
+            --discord-color: #5865F2;
+            --bg-color: #f9f9f9;
+            --card-bg: #ffffff;
+        }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: var(--bg-color); margin: 0; padding-top: 60px; }
+        
+        /* ナビゲーション */
+        nav { background: #fff; border-bottom: 1px solid #ddd; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: fixed; top: 0; width: 100%; box-sizing: border-box; z-index: 1000; }
+        .logo { font-weight: bold; font-size: 1.2rem; color: var(--discord-color); }
+        .login-btn { background: var(--discord-color); color: white; padding: 8px 16px; border-radius: 5px; text-decoration: none; font-size: 0.9rem; }
+
+        /* メインコンテンツ */
+        .container { max-width: 1000px; margin: 20px auto; padding: 0 20px; }
+        .hero { background: var(--discord-color); color: white; padding: 40px; border-radius: 10px; margin-bottom: 30px; text-align: center; }
+        
+        /* ニュースカード */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: var(--card-bg); border: 1px solid #eee; border-radius: 8px; overflow: hidden; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .card-img { width: 100%; height: 150px; background: #ddd; }
+        .card-body { padding: 15px; }
+        .card-tag { font-size: 0.7rem; color: var(--discord-color); font-weight: bold; text-transform: uppercase; }
+        .card-title { margin: 10px 0; font-size: 1.1rem; }
+        .card-text { font-size: 0.9rem; color: #666; line-height: 1.5; }
+    </style>
 </head>
 <body>
-    <h1>マイサイトへようこそ</h1>
-    <!-- 連携用のURLは後ほどDiscord Developer Portalで取得します -->
-    <a id="login" href="#">Discordでログインする</a>
+
+    <nav>
+        <div class="logo">DISCO WIKI風</div>
+        <a id="login" class="login-btn" href="#">Discordでログイン</a>
+    </nav>
+
+    <div class="container">
+        <div class="hero">
+            <h1>Discordの最新情報をチェック</h1>
+            <p>BOT、サーバー、アップデートに関する情報を集約しています。</p>
+        </div>
+
+        <div class="grid">
+            <!-- 記事1 -->
+            <div class="card">
+                <div class="card-img" style="background: url('https://placeholder.com') center/cover;"></div>
+                <div class="card-body">
+                    <span class="card-tag">アップデート</span>
+                    <h3 class="card-title">最新アップデート情報 2024</h3>
+                    <p class="card-text">新機能やUIの変更点について詳しく解説します。</p>
+                </div>
+            </div>
+            <!-- 記事2 -->
+            <div class="card">
+                <div class="card-img" style="background: url('https://placeholder.com') center/cover;"></div>
+                <div class="card-body">
+                    <span class="card-tag">BOT情報</span>
+                    <h3 class="card-title">おすすめ管理BOT 5選</h3>
+                    <p class="card-text">サーバー運営を自動化するための必須BOTを紹介。</p>
+                </div>
+            </div>
+            <!-- 記事3 -->
+            <div class="card">
+                <div class="card-img" style="background: url('https://placeholder.com') center/cover;"></div>
+                <div class="card-body">
+                    <span class="card-tag">サーバー</span>
+                    <h3 class="card-title">コミュニティの作り方</h3>
+                    <p class="card-text">人が集まるサーバーにするための初期設定のコツ。</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // ここに後で認証用URLを入れます
-        const CLIENT_ID = 'あなたのCLIENT_IDに書き換えてください';
+        // CLIENT_IDを入れてください
+        const CLIENT_ID = 'あなたのCLIENT_ID'; 
         const REDIRECT_URI = encodeURIComponent(window.location.origin + '/api/auth');
         document.getElementById('login').href = `https://discord.com{CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=identify`;
     </script>

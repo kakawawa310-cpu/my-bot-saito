@@ -1,1 +1,19 @@
-<h1>Hello Vercel!</h1>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Discord連携サイト</title>
+</head>
+<body>
+    <h1>マイサイトへようこそ</h1>
+    <!-- 連携用のURLは後ほどDiscord Developer Portalで取得します -->
+    <a id="login" href="#">Discordでログインする</a>
+
+    <script>
+        // ここに後で認証用URLを入れます
+        const CLIENT_ID = 'あなたのCLIENT_IDに書き換えてください';
+        const REDIRECT_URI = encodeURIComponent(window.location.origin + '/api/auth');
+        document.getElementById('login').href = `https://discord.com{CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=identify`;
+    </script>
+</body>
+</html>
